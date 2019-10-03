@@ -6,9 +6,9 @@ As Magento has begun to fully support Elastic Search as the default Search Engin
 
 | Magento Version | Elastic Search | Is default? |
 | :----: | :----: | :----: |
-| \>= 2.3.1 | 6.x (5.x, 2.x) | Yes
+| \>= 2.3.1 | 6.x | Yes
 | < 2.3.1 | 5.2 | No
-| \>= Commerce 2.2.8 | 6.x (5.x, 2.x) | Yes |
+| \>= Commerce 2.2.8 | 6.x | Yes |
 | < Commerce 2.2.3 | 5.1 | No | 
   
 You can read more on Elastic Search by reading the magento devdocs here: https://devdocs.magento.com/guides/v2.3/config-guide/elasticsearch/es-overview.html
@@ -20,11 +20,16 @@ Additionally, if you are using the configuration settings "Stores > Configuratio
 
 ---
 
-### QA Test Plan
-Configuration for "Stores > Configuration > Algolia Search > Advance > Make a backend search query" must be set to "Yes".
+### Features dependent on this compatibility
+#### Backend Search 
+Algolia will replace the results returned by the search adapter for Elastic Search. 
+
+You can test for backend search by changing your configuration for "Stores > Configuration > Algolia Search > Advance > Make a backend search query" to "Yes".
 
 Results can be reviewed by going to view source and seeing if the HTML rendered results reflect Algolia Search returned results.
 
-We will be testing the adapter on all 3 versions supported by Magento.
 
-Following this devdoc on changing versions: https://devdocs.magento.com/guides/v2.3/config-guide/elasticsearch/es-downgrade.html
+#### Backend Facet Rendering 
+If instantsearch is disabled, and you have enabled *Enable Backend Facet Rendering*, the filtering on the catalogsearch results page will be replaced by facets returned by Algolia. 
+
+This feature is currently not compatible with this external module and is still Work In Progress. 
