@@ -4,4 +4,15 @@
     <preference for="Magento\Elasticsearch\SearchAdapter\Adapter" type="Algolia\AlgoliaSearchElastic\Adapter\AlgoliaElasticSearchAdapter"/>
     <preference for="Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Adapter" type="Algolia\AlgoliaSearchElastic\Adapter\AlgoliaElasticSearch5Adapter"/>
 
+    <preference for="Magento\Elasticsearch\SearchAdapter\Filter\Builder\Term" type="Algolia\AlgoliaSearchElastic\Adapter\Filter\Builder\Term"/>
+
+    <type name="Magento\Framework\Search\Dynamic\DataProviderFactory">
+        <arguments>
+            <argument name="dataProviders" xsi:type="array">
+                <item name="elasticsearch" xsi:type="string">Algolia\AlgoliaSearchElastic\Adapter\Algolia\Dynamic\DataProvider</item>
+                <item name="elasticsearch5" xsi:type="string">Algolia\AlgoliaSearchElastic\Adapter\Algolia\Dynamic\DataProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>
