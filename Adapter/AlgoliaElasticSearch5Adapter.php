@@ -14,7 +14,6 @@ use Psr\Log\LoggerInterface;
 
 class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
 {
-
     /** @var AdapterHelper */
     private $adapterHelper;
 
@@ -56,6 +55,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
     public function query(RequestInterface $request)
     {
         if (!$this->adapterHelper->isAllowed()
+            || !$this->adapterHelper->isInstantEnabled()
             || !(
                 $this->adapterHelper->isSearch() ||
                 $this->adapterHelper->isReplaceCategory() ||
@@ -68,6 +68,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
 
         $aggregationBuilder = $this->aggregationBuilder;
         $query = $this->mapper->buildQuery($request);
+
         $aggregationBuilder->setQuery($this->queryContainerFactory->create(['query' => $query]));
 
         $rawResponse = [];
@@ -77,7 +78,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
         try {
             // If instant search is on, do not make a search query unless SEO request is set to 'Yes'
             if (!$this->adapterHelper->isInstantEnabled() || $this->adapterHelper->makeSeoRequest()) {
-                list($rawResponse, $totalHits) = $this->adapterHelper->getDocumentsFromAlgolia($request);
+                list($rawResponse, $totalHits) = $this->adapterHelper->getDocumentsFromAlgolia();
                 $rawResponse = $this->transformResponseForElastic($rawResponse);
             }
 
@@ -86,6 +87,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
         }
 
         $aggregations = $aggregationBuilder->build($request, $rawResponse);
+
         $response = [
             'documents' => $rawResponse,
             'aggregations' => $aggregations,
@@ -105,8 +107,9 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
             foreach ($rawResponse as &$hit) {
                 $hit['_id'] = $hit['entity_id'];
             }
-            $rawResponse['hits'] = ['hits' => $rawResponse];
         }
+
+        $rawResponse['hits'] = ['hits' => $rawResponse];
 
         return $rawResponse;
     }

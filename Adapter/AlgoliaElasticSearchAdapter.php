@@ -50,6 +50,7 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
     public function query(RequestInterface $request)
     {
         if (!$this->adapterHelper->isAllowed()
+            || !$this->adapterHelper->isInstantEnabled()
             || !(
                 $this->adapterHelper->isSearch() ||
                 $this->adapterHelper->isReplaceCategory() ||
