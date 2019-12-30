@@ -3,12 +3,16 @@
 namespace Algolia\AlgoliaSearchElastic\Plugin;
 
 use Algolia\AlgoliaSearch\Helper\AdapterHelper;
+use Algolia\AlgoliaSearchElastic\Helper\ElasticAdapterHelper;
 use Magento\Catalog\Model\ProductFactory;
 
 class FulltextCollection
 {
     /** @var AdapterHelper */
     private $adapterHelper;
+
+    /** @var ElasticAdapterHelper */
+    private $esAdapterHelper;
 
     /** @var ProductFactory */
     private $productFactory;
@@ -23,27 +27,12 @@ class FulltextCollection
      */
     public function __construct(
         AdapterHelper $adapterHelper,
+        ElasticAdapterHelper $esAdapterHelper,
         ProductFactory $productFactory
     ) {
         $this->adapterHelper = $adapterHelper;
+        $this->esAdapterHelper = $esAdapterHelper;
         $this->productFactory = $productFactory;
-    }
-
-    public function replaceClient()
-    {
-        if (!$this->adapterHelper->isAllowed()
-            || !$this->adapterHelper->isInstantEnabled()
-            || !(
-                $this->adapterHelper->isSearch() ||
-                $this->adapterHelper->isReplaceCategory() ||
-                $this->adapterHelper->isReplaceAdvancedSearch() ||
-                $this->adapterHelper->isLandingPage()
-            )
-        ) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -56,7 +45,7 @@ class FulltextCollection
         $field,
         $condition = null
     ) {
-        if (!$condition || !$this->replaceClient()) {
+        if (!$condition || !$this->esAdapterHelper->replaceElasticSearchResults()) {
             return [$field, $condition];
         }
 
@@ -97,17 +86,19 @@ class FulltextCollection
         return $this->product;
     }
 
+    /**
+     * @return array
+     */
     public function getFacets()
     {
         if (!$this->facets) {
             $facets = [];
-            $configFacets = $this->adapterHelper->getFacets();
+            $configFacets = $this->esAdapterHelper->getFacets();
             if (is_array($configFacets) && count($configFacets)) {
                 $facets = array_map(function ($facet) {
                     return $facet['attribute'];
                 }, $configFacets);
             }
-
             $this->facets = $facets;
         }
 

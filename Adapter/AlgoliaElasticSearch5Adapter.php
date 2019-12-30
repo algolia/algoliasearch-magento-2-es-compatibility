@@ -3,9 +3,10 @@
 namespace Algolia\AlgoliaSearchElastic\Adapter;
 
 use Algolia\AlgoliaSearch\Helper\AdapterHelper;
+use Algolia\AlgoliaSearchElastic\Helper\ElasticAdapterHelper;
 use Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Adapter as ElasticSearch5Adapter;
 use Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Mapper;
-use Magento\Elasticsearch\SearchAdapter\Aggregation\Builder as AggregationBuilder;
+use Algolia\AlgoliaSearchElastic\Adapter\Aggregation\Builder as AggregationBuilder;
 use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
@@ -16,6 +17,9 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
 {
     /** @var AdapterHelper */
     private $adapterHelper;
+
+    /** @var ElasticAdapterHelper */
+    private $esAdapterHelper;
 
     /** @var QueryContainerFactory */
     private $queryContainerFactory;
@@ -29,6 +33,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
      * @param QueryContainerFactory $queryContainerFactory
      * @param LoggerInterface|null $logger
      * @param AdapterHelper $adapterHelper
+     * @param ElasticAdapterHelper $esAdapterHelper
      */
     public function __construct(
         ConnectionManager $connectionManager,
@@ -37,13 +42,15 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
         AggregationBuilder $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
         LoggerInterface $logger = null,
-        AdapterHelper $adapterHelper
+        AdapterHelper $adapterHelper,
+        ElasticAdapterHelper $esAdapterHelper
     ) {
 
         parent::__construct($connectionManager, $mapper, $responseFactory, $aggregationBuilder, $queryContainerFactory,
             $logger);
         
         $this->adapterHelper = $adapterHelper;
+        $this->esAdapterHelper = $esAdapterHelper;
         $this->queryContainerFactory = $queryContainerFactory;
 
     }
@@ -54,15 +61,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
      */
     public function query(RequestInterface $request)
     {
-        if (!$this->adapterHelper->isAllowed()
-            || !$this->adapterHelper->isInstantEnabled()
-            || !(
-                $this->adapterHelper->isSearch() ||
-                $this->adapterHelper->isReplaceCategory() ||
-                $this->adapterHelper->isReplaceAdvancedSearch() ||
-                $this->adapterHelper->isLandingPage()
-            )
-        ) {
+        if (!$this->esAdapterHelper->replaceElasticSearchResults()) {
             return parent::query($request);
         }
 
@@ -78,7 +77,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
         try {
             // If instant search is on, do not make a search query unless SEO request is set to 'Yes'
             if (!$this->adapterHelper->isInstantEnabled() || $this->adapterHelper->makeSeoRequest()) {
-                list($rawResponse, $totalHits) = $this->adapterHelper->getDocumentsFromAlgolia();
+                list($rawResponse, $totalHits, $facets) = $this->adapterHelper->getDocumentsFromAlgolia();
                 $rawResponse = $this->transformResponseForElastic($rawResponse);
             }
 
@@ -86,6 +85,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
             return parent::query($request);
         }
 
+        $aggregationBuilder->setFacets($facets);
         $aggregations = $aggregationBuilder->build($request, $rawResponse);
 
         $response = [
