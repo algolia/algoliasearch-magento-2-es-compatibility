@@ -45,9 +45,6 @@ class FulltextCollection
         $field,
         $condition = null
     ) {
-
-        // return [null, null];
-
         if (!$condition || !$this->esAdapterHelper->replaceElasticSearchResults()) {
             return [$field, $condition];
         }
