@@ -15,6 +15,15 @@ use Magento\Framework\Search\RequestInterface;
 
 class Builder extends ElasticSearchBuilder
 {
+    /**
+     * @var DataProviderInterface[]
+     */
+    protected $dataProviderContainer;
+
+    /**
+     * @var BucketBuilderInterface[]
+     */
+    protected $aggregationContainer;
 
     /**
      * @var DataProviderFactory
@@ -134,7 +143,7 @@ class Builder extends ElasticSearchBuilder
     /**
      * @return \Magento\Catalog\Model\Product
      */
-    public function getProduct()
+    private function getProduct()
     {
         if (!$this->product) {
             $this->product = $this->productFactory->create();
@@ -161,7 +170,7 @@ class Builder extends ElasticSearchBuilder
         $this->facets = $facets;
     }
 
-    public function getFacets()
+    private function getFacets()
     {
         return $this->facets;
     }

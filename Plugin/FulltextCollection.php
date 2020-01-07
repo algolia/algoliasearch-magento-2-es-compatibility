@@ -45,11 +45,14 @@ class FulltextCollection
         $field,
         $condition = null
     ) {
+
+        // return [null, null];
+
         if (!$condition || !$this->esAdapterHelper->replaceElasticSearchResults()) {
             return [$field, $condition];
         }
 
-        if (in_array($field, $this->getFacets())) {
+        if (is_array($this->getFacets()) && in_array($field, $this->getFacets())) {
             $condition = $this->getOptionIdByLabel($field, $condition);
         }
 

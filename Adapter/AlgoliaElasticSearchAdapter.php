@@ -71,7 +71,7 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
         try {
             // If instant search is on, do not make a search query unless SEO request is set to 'Yes'
             if (!$this->adapterHelper->isInstantEnabled() || $this->adapterHelper->makeSeoRequest()) {
-                list($rawResponse, $totalHits, $facets) = $this->adapterHelper->getDocumentsFromAlgolia($request);
+                list($rawResponse, $totalHits, $facets) = $this->adapterHelper->getDocumentsFromAlgolia();
                 $rawResponse = $this->transformResponseForElastic($rawResponse);
             }
 
@@ -80,7 +80,8 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
         }
 
         $aggregationBuilder->setFacets($facets);
-        $aggregations = $aggregationBuilder->build($request, $rawResponse, $facets);
+        $aggregations = $aggregationBuilder->build($request, $rawResponse);
+
         $response = [
             'documents' => $rawResponse,
             'aggregations' => $aggregations,
@@ -100,8 +101,9 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
             foreach ($rawResponse as &$hit) {
                 $hit['_id'] = $hit['entity_id'];
             }
-            $rawResponse['hits'] = ['hits' => $rawResponse];
         }
+
+        $rawResponse['hits'] = ['hits' => $rawResponse];
 
         return $rawResponse;
     }
