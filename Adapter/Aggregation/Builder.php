@@ -16,16 +16,6 @@ use Magento\Framework\Search\RequestInterface;
 class Builder extends ElasticSearchBuilder
 {
     /**
-     * @var DataProviderInterface[]
-     */
-    protected $dataProviderContainer;
-
-    /**
-     * @var BucketBuilderInterface[]
-     */
-    protected $aggregationContainer;
-
-    /**
      * @var DataProviderFactory
      */
     private $dataProviderFactory;
