@@ -120,7 +120,7 @@ class Builder extends ElasticSearchBuilder
 
     private function getOptionIdByLabel($attributeCode, $optionLabel)
     {
-        $product = $this->productFactory->create();
+        $product = $this->getProduct();
         $isAttributeExist = $product->getResource()->getAttribute($attributeCode);
         $optionId = '';
         if ($isAttributeExist && $isAttributeExist->usesSource()) {
