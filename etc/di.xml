@@ -4,4 +4,8 @@
     <preference for="Magento\Elasticsearch\SearchAdapter\Adapter" type="Algolia\AlgoliaSearchElastic\Adapter\AlgoliaElasticSearchAdapter"/>
     <preference for="Magento\Elasticsearch\Elasticsearch5\SearchAdapter\Adapter" type="Algolia\AlgoliaSearchElastic\Adapter\AlgoliaElasticSearch5Adapter"/>
 
+    <type name="Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection">
+        <plugin name="algoliasearchelastic_search_filter" type="Algolia\AlgoliaSearchElastic\Plugin\FulltextCollection" />
+    </type>
+
 </config>
