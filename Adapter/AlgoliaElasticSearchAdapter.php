@@ -4,13 +4,14 @@ namespace Algolia\AlgoliaSearchElastic\Adapter;
 
 use Algolia\AlgoliaSearch\Helper\AdapterHelper;
 use Algolia\AlgoliaSearchElastic\Helper\ElasticAdapterHelper;
-use Magento\Elasticsearch\SearchAdapter\Adapter as ElasticSearchAdapter;
+use Magento\Elasticsearch7\SearchAdapter\Adapter as ElasticSearchAdapter;
 use Algolia\AlgoliaSearchElastic\Adapter\Aggregation\Builder as AggregationBuilder;
 use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
 use Magento\Elasticsearch\SearchAdapter\Mapper;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
 use Magento\Framework\Search\RequestInterface;
+use Psr\Log\LoggerInterface;
 
 class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
 {
@@ -41,10 +42,11 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
         AggregationBuilder $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
         AdapterHelper $adapterHelper,
-        ElasticAdapterHelper $esAdapterHelper
+        ElasticAdapterHelper $esAdapterHelper,
+        LoggerInterface $logger
     ) {
 
-        parent::__construct($connectionManager, $mapper, $responseFactory, $aggregationBuilder, $queryContainerFactory);
+        parent::__construct($connectionManager, $mapper, $responseFactory, $aggregationBuilder, $queryContainerFactory, $logger);
 
         $this->adapterHelper = $adapterHelper;
         $this->esAdapterHelper = $esAdapterHelper;
@@ -54,7 +56,7 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
      * @param RequestInterface $request
      * @return \Magento\Framework\Search\Response\QueryResponse
      */
-    public function query(RequestInterface $request)
+    public function query(RequestInterface $request) : QueryResponse
     {
         if (!$this->esAdapterHelper->replaceElasticSearchResults()) {
             return parent::query($request);
