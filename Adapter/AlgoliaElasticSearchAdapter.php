@@ -2,6 +2,7 @@
 
 namespace Algolia\AlgoliaSearchElastic\Adapter;
 
+use Magento\Framework\Search\Response\QueryResponse;
 use Algolia\AlgoliaSearch\Helper\AdapterHelper;
 use Algolia\AlgoliaSearchElastic\Helper\ElasticAdapterHelper;
 use Magento\Elasticsearch7\SearchAdapter\Adapter as ElasticSearchAdapter;
@@ -24,6 +25,18 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
 
     /** @var QueryContainerFactory */
     private $queryContainerFactory;
+
+    /**
+     * Mapper instance
+     *
+     * @var Mapper
+     */
+    private $mapper;
+
+    /**
+     * @var AggregationBuilder
+     */
+    private $aggregationBuilder;
 
     /**
      * AlgoliaElasticSearchAdapter constructor.
@@ -50,6 +63,8 @@ class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
 
         $this->adapterHelper = $adapterHelper;
         $this->esAdapterHelper = $esAdapterHelper;
+        $this->mapper = $mapper;
+        $this->aggregationBuilder = $aggregationBuilder;
     }
 
     /**
