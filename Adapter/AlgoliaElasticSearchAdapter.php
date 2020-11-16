@@ -8,7 +8,7 @@ use Algolia\AlgoliaSearchElastic\Helper\ElasticAdapterHelper;
 use Magento\Elasticsearch7\SearchAdapter\Adapter as ElasticSearchAdapter;
 use Algolia\AlgoliaSearchElastic\Adapter\Aggregation\Builder as AggregationBuilder;
 use Magento\Elasticsearch\SearchAdapter\ConnectionManager;
-use Magento\Elasticsearch\SearchAdapter\Mapper;
+use Magento\Elasticsearch7\SearchAdapter\Mapper;
 use Magento\Elasticsearch\SearchAdapter\ResponseFactory;
 use Magento\Elasticsearch\SearchAdapter\QueryContainerFactory;
 use Magento\Framework\Search\RequestInterface;
