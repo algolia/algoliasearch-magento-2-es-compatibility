@@ -41,7 +41,7 @@ class AlgoliaElasticSearch5Adapter extends ElasticSearch5Adapter
         ResponseFactory $responseFactory,
         AggregationBuilder $aggregationBuilder,
         QueryContainerFactory $queryContainerFactory,
-        LoggerInterface $logger = null,
+        LoggerInterface $logger,
         AdapterHelper $adapterHelper,
         ElasticAdapterHelper $esAdapterHelper
     ) {
