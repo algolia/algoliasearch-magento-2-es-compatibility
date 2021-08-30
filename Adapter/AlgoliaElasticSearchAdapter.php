@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
 
 class AlgoliaElasticSearchAdapter extends ElasticSearchAdapter
 {
+    /** @var ResponseFactory */
+    private $responseFactory;
 
     /** @var AdapterHelper */
     private $adapterHelper;
