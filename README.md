@@ -1,5 +1,7 @@
 # Algolia Search for Elastic Search Compatibility
 
+**/!\ This module is experimental and no longer in active development / maintenance.**
+
 Algolia Search Elastic Search Compatibility module for Magento 2 >=2.3.1 || >=2.2.8
 
 As Magento has begun to fully support Elastic Search as the default Search Engine, this module was created to make the Algolia Magento 2 extension compatible with this search engine. We choose to make this a separate extension as not all versions of Magento will include Elastic Search by default. Please see the chart below for compatibility:
